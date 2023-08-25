@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
+import { getPokemons } from '../services/pokemons'
 
-const incialUrl = 'https://pokeapi.co/api/v2/pokemon/'
+const incialUrl = 'https://pokeapi.co/api/v2/pokemon/?offset=0&limit=25 '
 // Otra forma de acceder a las paginas de los pokemones es con el siguiente link
 // https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20 y en donde esta cero ("0"&limit=20) podemos cambiar el valor a travez de una variable de estado por ejemplo const [page, setPage] = useState(0) y lo inicializamos en cero
 
@@ -20,41 +21,52 @@ export const usePokeApi = () => {
     setUrl(prevUrl)
   }
 
-  const pokeFun = async () => {
+  const fetchPokemons = async () => {
     setLoading(true)
-    const res = await fetch(url)
-    const json = await res.json()
-    const { results, next, previous } = json
-    setNextUrl(next)
-    setPrevUrl(previous)
-    getPokemon(results)
-    setLoading(false)
+    try {
+      const { next, previous, results } = await getPokemons(url)
+      getPokemon(results)
+
+      setNextUrl(next)
+      setPrevUrl(previous)
+    } catch (error) {
+      console.error(error.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const getPokemon = async (res) => {
-    res.map(async (item) => {
-      const res = await fetch(item.url)
-      const pokemon = await res.json()
+    setLoading(true)
+    try {
+      res.map(async (item) => {
+        const res = await fetch(item.url)
+        const pokemon = await res.json()
 
-      const POKEMON = {
-        id: pokemon.id,
-        name: pokemon.name,
-        image: pokemon.sprites.other.dream_world.front_default,
-        type: pokemon.types[0].type.name,
-        stats: pokemon.stats
-      }
+        const POKEMON = {
+          id: pokemon.id,
+          name: pokemon.name,
+          image: pokemon.sprites.other.dream_world.front_default,
+          type: pokemon.types[0].type.name,
+          stats: pokemon.stats,
+        }
 
-      setPokemons(function infoPokemon (pokemons) {
-        pokemons.sort((a, b) => (a.id > b.id ? 1 : -1))
-        pokemons = [...pokemons, POKEMON]
-        return pokemons
+        setPokemons(function infoPokemon(pokemons) {
+          pokemons.toSorted((a, b) => (a.id > b.id ? 1 : -1))
+          pokemons = [...pokemons, POKEMON]
+          return pokemons
+        })
       })
+    } catch (error) {
+      console.error(error.message)
+    } finally {
       setLoading(false)
-    })
+    }
   }
 
   useEffect(() => {
-    pokeFun()
+    fetchPokemons()
   }, [url])
+
   return { pokemons, loading, handleNext, handlePrev, prevUrl }
 }

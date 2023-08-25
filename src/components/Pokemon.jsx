@@ -1,68 +1,40 @@
 import { useModal } from '../hooks/useModal'
 import PokemonModal from './PokemonModal'
 
-const Pokemon = ({ id, name, type, image, stats }) => {
+const Pokemon = ({ pokemon }) => {
+  const { id, name, type, image, stats } = pokemon
   const [isOpenModal, openModal, closeModal] = useModal(false)
 
-  let color
-  switch (type) {
-    case 'bug':
-      color = 'bg-lime-400'
-      break
-    case 'water':
-      color = 'bg-blue-400'
-      break
-    case 'grass':
-      color = 'bg-green-400'
-      break
-    case 'fire':
-      color = 'bg-red-500'
-      break
-    case 'normal':
-      color = 'bg-gray-600'
-      break
-    case 'fighting':
-      color = 'bg-red-700'
-      break
-    case 'rock':
-      color = 'bg-yellow-600'
-      break
-    case 'steel':
-      color = 'bg-indigo-300'
-      break
-    case 'electric':
-      color = 'bg-yellow-400'
-      break
-    case 'flying':
-      color = 'bg-violet-400'
-      break
-    case 'psychic':
-      color = 'bg-rose-400'
-      break
-    case 'dragon':
-      color = 'bg-violet-600'
-      break
-    case 'ice':
-      color = 'bg-cyan-300'
-      break
-    case 'poison':
-      color = 'bg-fuchsia-700'
-      break
-    case 'dark':
-      color = 'bg-yellow-800'
-      break
-    case 'ghost':
-      color = 'bg-indigo-600'
-      break
-    case 'fairy':
-      color = 'bg-pink-300'
-      break
+  const pokemonColor = (type) => {
+    const colores = {
+      bug: 'bg-lime-400',
+      water: 'bg-blue-400',
+      grass: 'bg-green-400',
+      fire: 'bg-red-500',
+      normal: 'bg-gray-600',
+      fighting: 'bg-red-700',
+      rock: 'bg-yellow-600',
+      steel: 'bg-indigo-300',
+      electric: 'bg-yellow-400',
+      flying: 'bg-violet-400',
+      psychic: 'bg-rose-400',
+      dragon: 'bg-violet-600',
+      ice: 'bg-cyan-300',
+      poison: 'bg-fuchsia-700',
+      dark: 'bg-yellow-800',
+      ghost: 'bg-indigo-600',
+      fairy: 'bg-pink-300',
+    }
+    const colorDefault = 'bg-orange-700'
+    return colores[type] || colorDefault
   }
 
   return (
-    <div className='w-full flex justify-center'>
+    <>
       <article
-        className={`${type} ${color} border border-solid border-black p-3 rounded flex flex-col-reverse justify-between items-center  shadow-sm min-w-6/10 max-w-3/10`}
+        className={`${pokemonColor(
+          type
+        )} border border-solid border-black p-3 rounded flex flex-col-reverse justify-between items-center  shadow-sm w-full max-w-[280px]`}
       >
         <p className='text-center text-xl font-semibold'>
           {id} {name}
@@ -92,7 +64,7 @@ const Pokemon = ({ id, name, type, image, stats }) => {
           </ul>
         ))}
       </PokemonModal>
-    </div>
+    </>
   )
 }
 
