@@ -34,7 +34,7 @@ const Pokemon = ({ pokemon }) => {
       <article
         className={`${pokemonColor(
           type
-        )} border border-solid border-black p-3 rounded flex flex-col-reverse justify-between items-center  shadow-sm w-full max-w-[280px]`}
+        )} border border-solid border-black p-3 rounded flex flex-col-reverse justify-between items-center  shadow-sm w-full max-w-[280px] hover:bg-opacity-75`}
       >
         <p className='text-center text-xl font-semibold'>
           {id} {name}
