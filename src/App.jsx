@@ -12,9 +12,9 @@ function useSearch() {
 
   useEffect(() => {
     if (isFirstInput.current) {
-      const value = (isFirstInput.current = search)
-      console.log(value)
-      console.log(search)
+      // const value = (isFirstInput.current = search)
+      // console.log(value)
+      // console.log(search)
       isFirstInput.current = search === ''
       return
     }
@@ -61,13 +61,13 @@ function App() {
 
   const handleChange = (event) => {
     const newSearch = event.target.value.toLowerCase()
-    updateSearch(newSearch)
     setpokemonSearch([])
+    updateSearch(newSearch)
   }
 
   return (
-    <div className='block w-full max-w-6xl py-4 px-10 md:px-20 pb-32 m-auto bg-gradient-to-r from-cyan-500 via-blue-800  to-cyan-400 min-h-screen'>
-      <h1 className='mt-3 text-center text-5xl lg:text-6xl font-bold text-white/40'>
+    <div className='block w-full max-w-6xl py-4 px-10 md:px-20 pb-32 m-auto min-h-screen'>
+      <h1 className='mt-3 text-center text-5xl lg:text-6xl font-bold text-black/70'>
         Poké Api
       </h1>
       <Formulario
