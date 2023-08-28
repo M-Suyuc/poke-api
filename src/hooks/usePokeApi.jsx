@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { getPokemons, searchPokemon } from '../services/pokemons'
+import { mapeoPokemon } from '../utils/mapeo'
 
 const incialUrl = 'https://pokeapi.co/api/v2/pokemon/?offset=0&limit=25'
-// Otra forma de acceder a las paginas de los pokemones es con el siguiente link
-// https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20 y en donde esta cero ("0"&limit=20) podemos cambiar el valor a travez de una variable de estado por ejemplo const [page, setPage] = useState(0) y lo inicializamos en cero
 
-export const usePokeApi = () => {
+export const usePokeApi = ({ search }) => {
   const [url, setUrl] = useState(incialUrl)
   const [pokemons, setPokemons] = useState([])
   const [loading, setLoading] = useState(false)
   const [nextUrl, setNextUrl] = useState()
   const [prevUrl, setPrevUrl] = useState()
   const [pokemonSearch, setpokemonSearch] = useState([])
+  const previousSearch = useRef(search)
+  console.log(previousSearch)
 
   const handleNext = () => {
     setPokemons([])
@@ -23,8 +24,8 @@ export const usePokeApi = () => {
   }
 
   const fetchPokemons = async () => {
-    setLoading(true)
     try {
+      setLoading(true)
       const { next, previous, results } = await getPokemons(url)
       getPokemon(results)
 
@@ -47,17 +48,10 @@ export const usePokeApi = () => {
           throw error
         }
         const pokemon = await res.json()
-
-        const POKEMON = {
-          id: pokemon.id,
-          name: pokemon.name,
-          image: pokemon.sprites.other.dream_world.front_default,
-          type: pokemon.types[0].type.name,
-          stats: pokemon.stats,
-        }
+        const { POKEMON } = mapeoPokemon(pokemon)
 
         setPokemons(function infoPokemon(pokemons) {
-          pokemons.sort((a, b) => (a.id > b.id ? 1 : -1))
+          pokemons.sort((a, b) => a.id - b.id)
           pokemons = [...pokemons, POKEMON]
           return pokemons
         })
@@ -69,19 +63,19 @@ export const usePokeApi = () => {
     }
   }
 
-  const singlePokemon = async ({ search }) => {
-    setLoading(true)
+  const singlePokemon = useCallback(async ({ search }) => {
+    if (search === previousSearch.current) return
     try {
-      const POKEMON = await searchPokemon(
-        `https://pokeapi.co/api/v2/pokemon/${search}`
-      )
-      setpokemonSearch(POKEMON)
+      setLoading(true)
+      previousSearch.current = search
+      const POKEMON = await searchPokemon({ search })
+      setpokemonSearch([POKEMON])
     } catch (err) {
       console.log(err.message)
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     fetchPokemons()
