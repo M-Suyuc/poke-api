@@ -3,7 +3,7 @@ import PokemonModal from './PokemonModal'
 
 const Pokemon = ({ pokemon }) => {
   const { id, name, type, image, stats } = pokemon
-  const [isOpenModal, openModal, closeModal] = useModal(false)
+  const [isOpenModal, openModal, closeModal] = useModal()
 
   const pokemonColor = (type) => {
     const colores = {
@@ -51,18 +51,30 @@ const Pokemon = ({ pokemon }) => {
       </article>
 
       <PokemonModal isOpen={isOpenModal} closeModal={closeModal}>
-        <h3 className='text-center text-3xl font-bold'>
-          {id} - {name}
+        <h3 className='text-center text-4xl font-bold first-letter:uppercase text-slate-700'>
+          {name}
         </h3>
-        <p className='font-semibold text-xl '>Tipo:</p>
-        <p>{type}</p>
-        <p className='font-semibold text-xl'>Estadísticas:</p>
-        {stats.map((item) => (
-          <ul key={item.stat.name}>
-            <li className='font-semibold'>{item.stat.name}</li>
-            <li>{item.base_stat}</li>
-          </ul>
-        ))}
+        <div className='flex flex-col md:flex-row  justify-between items-center py-4 gap-4 md:gap-0'>
+          <div className='w-[100%] md:w-[50%] pl-0 flex flex-col justify-center items-center md:items-start md:pl-20 text-xl'>
+            <p className=''>Tipo: {type}</p>
+            {stats.map((item) => (
+              <ul key={item.stat.name}>
+                <li className='first-letter:uppercase'>
+                  {item.stat.name}: {item.base_stat}
+                </li>
+              </ul>
+            ))}
+          </div>
+          <div className='w-[50%] flex justify-center items-center'>
+            <figure className='w-[100%] md:w-[55%]'>
+              <img
+                src={image}
+                alt={name}
+                className='aspect-square w-full h-full'
+              />
+            </figure>
+          </div>
+        </div>
       </PokemonModal>
     </>
   )

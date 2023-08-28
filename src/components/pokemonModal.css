@@ -16,18 +16,22 @@
 }
 
 .modal-container {
+  margin: 4rem;
   position: relative;
-  padding: 1rem;
-  min-width: 320px;
-  max-width: 480px;
-  min-height: 200px;
-  max-height: 600px;
-  overflow-y: auto;
+  width: 100%;
+  height: auto;
+  max-width: 1024px;
+  overflow: hidden;
   background-color: #fff;
+  z-index: 20;
 }
 
 .modal-close {
   position: absolute;
-  top: 1rem;
+  z-index: 50;
+  top: 0rem;
   right: 1rem;
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: red;
 }
